@@ -4,6 +4,8 @@ from django.utils import importlib
 from django.utils.encoding import smart_unicode, smart_str
 from django.utils.datastructures import SortedDict
 
+from decimal import Decimal
+
 try:
     import cPickle as pickle
 except ImportError:
@@ -206,7 +208,8 @@ class CacheClass(BaseCache):
         if timeout is None:
             timeout = self.default_timeout
         try:
-            value = float(value)
+            if not isinstance(value, Decimal):
+                value = float(value)
             # If you lose precision from the typecast to str, then pickle value
             if int(value) != value:
                 raise TypeError
